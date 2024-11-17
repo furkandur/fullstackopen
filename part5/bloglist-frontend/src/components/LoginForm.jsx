@@ -1,7 +1,7 @@
 import { useState } from "react"
 import loginService from '../services/login'
 import blogService from '../services/blogs'
-const LoginForm = ({ setUser }) => {
+const LoginForm = ({ setUser, sendNotification }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -18,9 +18,17 @@ const LoginForm = ({ setUser }) => {
       blogService.setToken(user.token)
       setUsername('')
       setPassword('')
+      sendNotification(
+        'login succeed',
+        false
+      )
     
     } catch (exception) {
       console.log(exception.response.data.error)
+      sendNotification(
+        exception.response.data.error,
+        true
+      )
     }
   }
   return (
