@@ -3,11 +3,10 @@ import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -23,52 +22,31 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
-
-  useEffect(() => {
-    const user = window.localStorage
-  })
-
-  const handleLogin = async event => {
-    event.preventDefault()
-
-    try {
-      const user = await loginService.login({
-        username, password
-      })
-
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    
-    } catch (exception) {
-      console.log(exception.response.data.error)
-    }
-  }
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
+    blogService.setToken(null)
   }
 
   return (
     <div>
+      <h1>Blog List</h1>
       {
         user === null
         ? 
         <LoginForm 
-          handleLogin={handleLogin}
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
+          user={user}
+          setUser={setUser}
         />
         : 
         <div>
           <p>{user.name} logged in</p>
           <button onClick={handleLogout}>logout</button>
+          <BlogForm setBlogs={setBlogs} />
           <h2>blogs</h2>
           {blogs.map(blog => <Blog key={blog.id} blog={blog} /> )}
         </div>
