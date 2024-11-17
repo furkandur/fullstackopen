@@ -1,7 +1,12 @@
 import { useState } from "react"
 import blogService from '../services/blogs'
 
-const BlogForm = ({ blogs, setBlogs, sendNotification }) => {
+const BlogForm = ({
+  blogs,
+  setBlogs,
+  sendNotification,
+  setBlogFormVisible
+}) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -22,6 +27,7 @@ const BlogForm = ({ blogs, setBlogs, sendNotification }) => {
         `a new blog "${savedBlog.title}" added`,
         false
       )
+      setBlogFormVisible(false)
     } catch (exception) {
       sendNotification(
         exception.response.data.error,
