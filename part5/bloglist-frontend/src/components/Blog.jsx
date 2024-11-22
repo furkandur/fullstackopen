@@ -1,6 +1,6 @@
 import Togglable from "./Togglable"
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -9,15 +9,41 @@ const Blog = ({ blog }) => {
     marginBottom: 5
   }
 
+  const handleLikes = () => {
+    const newBlogUpdate = {
+      "title": blog.title,
+      "author": blog.author,
+      "url": blog.url,
+      "likes": blog.likes + 1,
+      "user": blog.user.id,
+    }
+    updateBlog(blog.id, newBlogUpdate)
+  }
+
+  const handleDelete = () => {
+    if (window.confirm(`Delete "${blog.title}" by ${blog.author}?`)) {
+      deleteBlog(blog.id)
+    }
+  }
+
+  const deleteButtonStyle = {
+    background: "red",
+    display: user.username === blog.user.username
+    ? ""
+    : "none"
+  }
+
   const blogDetails = () => {
-    return(
+    return (
       <div>
-        {blog.url} 
+        <a href={blog.url}>{blog.url}</a> 
         <br />
         likes: {blog.likes}
-        <button>like</button>
+        <button onClick={handleLikes}>like</button>
         <br />
         {blog.user.username}
+        <br />
+        <button style={deleteButtonStyle} onClick={handleDelete}>remove</button>
       </div>
     )
   }
