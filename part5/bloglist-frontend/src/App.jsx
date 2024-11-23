@@ -51,7 +51,7 @@ const App = () => {
   const updateBlog = async (id, blogObject) => {
     try {
       const updatedBlog = await blogService.update(id, blogObject)
-      setBlogs(blogs.map(blog => 
+      setBlogs(blogs.map(blog =>
         blog.id === id ? updatedBlog : blog
       ))
     } catch (exception) {
@@ -65,11 +65,11 @@ const App = () => {
   const deleteBlog = async id  => {
     try {
       const deletedBlog = await blogService.deleteBlog(id)
-      setBlogs(blogs.filter(blog => blog.id !== id))      
+      setBlogs(blogs.filter(blog => blog.id !== id))
       sendNotification(
-        `blog successfully deleted`,
+        'blog successfully deleted',
         false
-      ) 
+      )
     } catch (exception) {
       sendNotification(
         exception.response.data.error,
@@ -102,31 +102,31 @@ const App = () => {
       <Notification notification={notification}/>
       {
         user === null
-        ? 
-        <LoginForm 
-          setUser={setUser}
-          sendNotification={sendNotification}
-        />
-        :
-        <div>
-          <p>{user.name} logged in</p>
-          <button onClick={handleLogout}>logout</button>
-          <Togglable 
-          activateButtonLabel='create blog'
-          deactivateButtonLabel='cancel'
-          ref={blogFormRef}>
-            <BlogForm createBlog={createBlog} />
-          </Togglable>
-          <h2>blogs</h2>
-          {blogs.map(blog => 
-            <Blog 
-              key={blog.id}
-              blog={blog}
-              updateBlog={updateBlog}
-              user={user}
-              deleteBlog={deleteBlog}
-            /> )}
-        </div>
+          ?
+          <LoginForm
+            setUser={setUser}
+            sendNotification={sendNotification}
+          />
+          :
+          <div>
+            <p>{user.name} logged in</p>
+            <button onClick={handleLogout}>logout</button>
+            <Togglable
+              activateButtonLabel='create blog'
+              deactivateButtonLabel='cancel'
+              ref={blogFormRef}>
+              <BlogForm createBlog={createBlog} />
+            </Togglable>
+            <h2>blogs</h2>
+            {blogs.map(blog =>
+              <Blog
+                key={blog.id}
+                blog={blog}
+                updateBlog={updateBlog}
+                user={user}
+                deleteBlog={deleteBlog}
+              /> )}
+          </div>
       }
     </div>
   )

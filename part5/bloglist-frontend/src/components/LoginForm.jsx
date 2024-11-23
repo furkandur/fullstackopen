@@ -1,6 +1,7 @@
-import { useState } from "react"
+import { useState } from 'react'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
+import PropTypes from 'prop-types'
 
 const LoginForm = ({ setUser, sendNotification }) => {
   const [username, setUsername] = useState('')
@@ -23,7 +24,7 @@ const LoginForm = ({ setUser, sendNotification }) => {
         'login succeed',
         false
       )
-    
+
     } catch (exception) {
       console.log(exception.response.data.error)
       sendNotification(
@@ -38,7 +39,7 @@ const LoginForm = ({ setUser, sendNotification }) => {
       <form onSubmit={handleLogin}>
         <div>
           username
-            <input
+          <input
             type="text"
             value={username}
             name="Username"
@@ -47,7 +48,7 @@ const LoginForm = ({ setUser, sendNotification }) => {
         </div>
         <div>
           password
-            <input
+          <input
             type="password"
             value={password}
             name="Password"
@@ -56,8 +57,13 @@ const LoginForm = ({ setUser, sendNotification }) => {
         </div>
         <button type="submit">login</button>
       </form>
-    </div> 
+    </div>
   )
+}
+
+LoginForm.propTypes = {
+  setUser: PropTypes.func.isRequired,
+  sendNotification: PropTypes.func.isRequired
 }
 
 export default LoginForm

@@ -1,4 +1,5 @@
-import Togglable from "./Togglable"
+import Togglable from './Togglable'
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   const blogStyle = {
@@ -11,11 +12,11 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
 
   const handleLikes = () => {
     const newBlogUpdate = {
-      "title": blog.title,
-      "author": blog.author,
-      "url": blog.url,
-      "likes": blog.likes + 1,
-      "user": blog.user.id,
+      'title': blog.title,
+      'author': blog.author,
+      'url': blog.url,
+      'likes': blog.likes + 1,
+      'user': blog.user.id,
     }
     updateBlog(blog.id, newBlogUpdate)
   }
@@ -27,16 +28,16 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   }
 
   const deleteButtonStyle = {
-    background: "red",
+    background: 'red',
     display: user.username === blog.user.username
-    ? ""
-    : "none"
+      ? ''
+      : 'none'
   }
 
   const blogDetails = () => {
     return (
       <div>
-        <a href={blog.url}>{blog.url}</a> 
+        <a href={blog.url}>{blog.url}</a>
         <br />
         likes: {blog.likes}
         <button onClick={handleLikes}>like</button>
@@ -50,7 +51,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
 
   return(
     <div style={blogStyle}>
-      {blog.title} - {blog.author} 
+      {blog.title} - {blog.author}
       <Togglable
         activateButtonLabel={'view'}
         deactivateButtonLabel={'hide'}
@@ -59,6 +60,13 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
       </Togglable>
     </div>
   )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  updateBlog: PropTypes.func.isRequired,
+  deleteBlog: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired
 }
 
 export default Blog
