@@ -36,7 +36,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
 
   const blogDetails = () => {
     return (
-      <div>
+      <div className='blogDetails'>
         <a href={blog.url}>{blog.url}</a>
         <br />
         likes: {blog.likes}
@@ -50,7 +50,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   }
 
   return(
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blogContent'>
       {blog.title} - {blog.author}
       <Togglable
         activateButtonLabel={'view'}
