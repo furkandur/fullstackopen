@@ -37,12 +37,12 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   const blogDetails = () => {
     return (
       <div className='blogDetails'>
-        <a href={blog.url}>{blog.url}</a>
+        <span><a href={blog.url}>{blog.url}</a></span>
         <br />
-        likes: {blog.likes}
+        <span>likes: {blog.likes}</span>
         <button onClick={handleLikes}>like</button>
         <br />
-        {blog.user.username}
+        <span>{blog.user.username}</span>
         <br />
         <button style={deleteButtonStyle} onClick={handleDelete}>remove</button>
       </div>

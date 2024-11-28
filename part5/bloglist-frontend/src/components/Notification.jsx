@@ -10,7 +10,7 @@ const Notification = ({ notification }) => {
       : 'notification success'
 
   return (
-    <div className={className}>
+    <div className={className} data-testid='notification'>
       {notification.message}
     </div>
   )
