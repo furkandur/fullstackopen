@@ -1,24 +1,16 @@
 import { useDispatch } from "react-redux"
+import { createAnecdote } from "../reducers/anecdoteReducer"
+import { sendNotification } from "../reducers/notificationReducer"
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch()
   
-  const addAnecdote = event => {
+  const addAnecdote = async event => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-    dispatch({
-      type: 'anecdotes/createAnecdote',
-      payload: content
-    })
-
-    dispatch({
-      type: 'notification/setNotification',
-      payload: {
-        message: `'${content}' successfully created.`,
-        error: false
-      }
-    })
+    dispatch(createAnecdote(content))
+    dispatch(sendNotification(`'${content}' successfully created.`, false, 5))
   }
 
   return (
