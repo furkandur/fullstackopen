@@ -1,12 +1,17 @@
 import { useState } from 'react'
-import PropTypes from 'prop-types'
+import { useDispatch, useSelector } from 'react-redux'
+import { hideForm, toggleForm } from '../reducers/formVisibilityReducer'
+import { saveBlog } from '../reducers/blogReducer'
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  const handleCreateBlog = event => {
+  const dispatch = useDispatch()
+  const isFormVisible = useSelector((state) => state.formVisibility.blogForm)
+
+  const handleCreateBlog = (event) => {
     event.preventDefault()
 
     const newBlog = {
@@ -15,48 +20,54 @@ const BlogForm = ({ createBlog }) => {
       url
     }
 
-    createBlog(newBlog)
+    dispatch(saveBlog(newBlog))
+    dispatch(hideForm('blogForm'))
   }
 
   return (
     <div>
-      <h2>Create a new blog</h2>
-      <form onSubmit={handleCreateBlog}>
+      {isFormVisible && (
         <div>
-          title
-          <input
-            type="text"
-            onChange={({ target }) => setTitle(target.value)}
-            placeholder='title'
-            data-testid='title'
-          />
+          <h2>Create a new blog</h2>
+          <form onSubmit={handleCreateBlog}>
+            <div>
+              title
+              <input
+                type="text"
+                onChange={({ target }) => setTitle(target.value)}
+                placeholder="title"
+                data-testid="title"
+              />
+            </div>
+            <div>
+              author
+              <input
+                type="text"
+                onChange={({ target }) => setAuthor(target.value)}
+                placeholder="author"
+                data-testid="author"
+              />
+            </div>
+            <div>
+              url
+              <input
+                type="text"
+                onChange={({ target }) => setUrl(target.value)}
+                placeholder="url"
+                data-testid="url"
+              />
+            </div>
+            <button type="submit" data-testid="blog-submit">
+              create
+            </button>
+          </form>
         </div>
-        <div>
-          author
-          <input
-            type="text"
-            onChange={({ target }) => setAuthor(target.value)}
-            placeholder='author'
-            data-testid='author'
-          />
-        </div>
-        <div>
-          url
-          <input
-            type="text"
-            onChange={({ target }) => setUrl(target.value)}
-            placeholder='url'
-            data-testid='url'
-          />
-        </div>
-        <button type="submit" data-testid='blog-submit'>create</button>
-      </form>
+      )}
+      <button onClick={() => dispatch(toggleForm('blogForm'))}>
+        {isFormVisible ? 'cancel' : 'create blog'}
+      </button>
     </div>
   )
-}
-
-BlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired
 }
 
 export default BlogForm

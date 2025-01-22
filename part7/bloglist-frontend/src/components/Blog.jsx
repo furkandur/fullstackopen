@@ -1,7 +1,10 @@
+import { useDispatch } from 'react-redux'
 import Togglable from './Togglable'
-import PropTypes from 'prop-types'
+import { deleteBlogInDb, updateBlogInDb } from '../reducers/blogReducer'
 
-const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
+const Blog = ({ blog }) => {
+  const dispatch = useDispatch()
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -11,26 +14,27 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   }
 
   const handleLikes = () => {
-    const newBlogUpdate = {
+    const updatedBlog = {
       title: blog.title,
       author: blog.author,
       url: blog.url,
-      likes: blog.likes + 1,
-      user: blog.user.id
+      likes: blog.likes + 1
     }
-    updateBlog(blog.id, newBlogUpdate)
+    dispatch(updateBlogInDb(blog.id, updatedBlog))
   }
 
   const handleDelete = () => {
     if (window.confirm(`Delete "${blog.title}" by ${blog.author}?`)) {
-      deleteBlog(blog.id)
+      dispatch(deleteBlogInDb(blog.id))
     }
   }
 
+  /*
   const deleteButtonStyle = {
     background: 'red',
     display: user.username === blog.user.username ? '' : 'none'
   }
+  */
 
   const blogDetails = () => {
     return (
@@ -44,9 +48,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
         <br />
         <span>{blog.user.username}</span>
         <br />
-        <button style={deleteButtonStyle} onClick={handleDelete}>
-          remove
-        </button>
+        <button onClick={handleDelete}>remove</button>
       </div>
     )
   }
@@ -59,13 +61,6 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
       </Togglable>
     </div>
   )
-}
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  updateBlog: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
 }
 
 export default Blog
