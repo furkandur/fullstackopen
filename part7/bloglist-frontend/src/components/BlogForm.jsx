@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { hideForm, toggleForm } from '../reducers/formVisibilityReducer'
 import { saveBlog } from '../reducers/blogReducer'
+import { Button, Stack, TextField, Typography } from '@mui/material'
 
 const BlogForm = () => {
   const [title, setTitle] = useState('')
@@ -28,44 +29,48 @@ const BlogForm = () => {
     <div>
       {isFormVisible && (
         <div>
-          <h2>Create a new blog</h2>
+          <Typography variant="h5" align="center">
+            Create A New Blog
+          </Typography>
           <form onSubmit={handleCreateBlog}>
-            <div>
-              title
-              <input
+            <Stack gap={1}>
+              <TextField
                 type="text"
+                label="title"
                 onChange={({ target }) => setTitle(target.value)}
-                placeholder="title"
                 data-testid="title"
               />
-            </div>
-            <div>
-              author
-              <input
+              <TextField
                 type="text"
+                label="author"
                 onChange={({ target }) => setAuthor(target.value)}
-                placeholder="author"
                 data-testid="author"
               />
-            </div>
-            <div>
-              url
-              <input
+              <TextField
                 type="text"
+                label="url"
                 onChange={({ target }) => setUrl(target.value)}
-                placeholder="url"
                 data-testid="url"
               />
-            </div>
-            <button type="submit" data-testid="blog-submit">
-              create
-            </button>
+              <Button
+                type="submit"
+                variant="contained"
+                data-testid="blog-submit"
+              >
+                create
+              </Button>
+            </Stack>
           </form>
         </div>
       )}
-      <button onClick={() => dispatch(toggleForm('blogForm'))}>
+      <Button
+        variant="outlined"
+        fullWidth
+        onClick={() => dispatch(toggleForm('blogForm'))}
+        sx={{ mt: 1 }}
+      >
         {isFormVisible ? 'cancel' : 'create blog'}
-      </button>
+      </Button>
     </div>
   )
 }

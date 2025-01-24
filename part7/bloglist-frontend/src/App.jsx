@@ -1,28 +1,40 @@
 import { useEffect } from 'react'
-import BlogList from './components/BlogList'
-import LoginForm from './components/LoginForm'
-import BlogForm from './components/BlogForm'
-import Notification from './components/Notification'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchBlogs } from './reducers/blogReducer'
 import { initializeUser, logout } from './reducers/userReducer'
+import { Route, Routes, useMatch } from 'react-router-dom'
+
 import Header from './components/Header'
-import { Route, Routes } from 'react-router-dom'
-import Users from './components/Users'
+import Notification from './components/Notification'
+import BlogList from './components/BlogList'
+import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
+import UserList from './components/UserList'
+import User from './components/User'
+import BlogDetails from './components/BlogDetails'
+import { Container } from '@mui/material'
 
 const App = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
+  const blogs = useSelector((state) => state.blogs)
 
   useEffect(() => {
     dispatch(fetchBlogs())
     dispatch(initializeUser())
   }, [dispatch])
 
+  const userMatch = useMatch('/users/:id')
+  const userId = userMatch ? userMatch.params.id : undefined
+
+  const blogMatch = useMatch('/blogs/:id')
+  const blog = blogMatch
+    ? blogs.find((blog) => blog.id === blogMatch.params.id)
+    : undefined
+
   return (
-    <>
+    <Container>
       <div>
-        <h1>BlogList</h1>
         <Notification />
       </div>
       {user === null ? (
@@ -30,8 +42,6 @@ const App = () => {
       ) : (
         <div>
           <Header />
-          <p>{user.name} logged in</p>
-          <button onClick={() => dispatch(logout())}>logout</button>
           <Routes>
             <Route
               path="/"
@@ -42,11 +52,13 @@ const App = () => {
                 </>
               }
             />
-            <Route path="/users" element={<Users />} />
+            <Route path="/blogs/:id" element={<BlogDetails blog={blog} />} />
+            <Route path="/users" element={<UserList />} />
+            <Route path="/users/:id" element={<User userId={userId} />} />
           </Routes>
         </div>
       )}
-    </>
+    </Container>
   )
 }
 

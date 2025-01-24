@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types'
+import { Alert } from '@mui/material'
 import { useSelector } from 'react-redux'
 
 const Notification = () => {
@@ -6,14 +6,12 @@ const Notification = () => {
 
   if (notification === null) return null
 
-  const className = notification.isError
-    ? 'notification error'
-    : 'notification success'
+  const severity = notification.isError ? 'error' : 'success'
 
   return (
-    <div className={className} data-testid="notification">
+    <Alert severity={severity} data-testid="notification">
       {notification.message}
-    </div>
+    </Alert>
   )
 }
 

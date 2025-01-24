@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { login } from '../reducers/userReducer'
+import { Box, Button, Stack, TextField, Typography } from '@mui/material'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
@@ -17,32 +18,32 @@ const LoginForm = () => {
 
   return (
     <div>
-      <h2>log in to application</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
-            type="text"
-            value={username}
-            name="Username"
-            data-testid="username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          password
-          <input
-            type="password"
-            value={password}
-            name="Password"
-            data-testid="password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit" data-testid="login">
-          login
-        </button>
-      </form>
+      <Box marginTop={5}>
+        <Typography variant="h3">LOGIN TO APP</Typography>
+        <form onSubmit={handleLogin}>
+          <Stack gap={2}>
+            <TextField
+              type="text"
+              label="Username"
+              value={username}
+              name="Username"
+              data-testid="username"
+              onChange={({ target }) => setUsername(target.value)}
+            />
+            <TextField
+              type="password"
+              label="Password"
+              value={password}
+              name="Password"
+              data-testid="password"
+              onChange={({ target }) => setPassword(target.value)}
+            />
+            <Button variant="contained" type="submit" data-testid="login">
+              login
+            </Button>
+          </Stack>
+        </form>
+      </Box>
     </div>
   )
 }

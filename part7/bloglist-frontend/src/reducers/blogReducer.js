@@ -68,6 +68,17 @@ export const updateBlogInDb = (id, blogObject) => {
   }
 }
 
+export const addComment = (id, commentObject) => {
+  return async dispatch => {
+    try {
+      const addedComment = await blogService.addComment(id, commentObject)
+      dispatch(updateBlog(addedComment))
+    } catch (error) {
+      dispatch(sendNotification(error.response.data.error, true))
+    }
+  }
+}
+
 export const {
   appendBlog,
   setBlogs,
