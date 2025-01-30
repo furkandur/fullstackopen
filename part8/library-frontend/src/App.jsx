@@ -1,26 +1,53 @@
+import { useEffect, useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
+import Header from './components/Header'
+import LoginForm from './components/LoginForm'
 import NewBook from './components/NewBook'
-import { Link, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
+import ProtectedRoute from './components/ProtectedRoute'
+import Recommend from './components/Recommend'
 
 const App = () => {
+  const [token, setToken] = useState('')
+
+  useEffect(() => {
+    const localToken = localStorage.getItem('library-user-token')
+    if (localToken) {
+      setToken(localToken)
+    }
+  }, [])
+
   return (
     <>
-      <div>
-        <Link to={'/'} style={{ marginRight: 20 }}>
-          Authors
-        </Link>
-        <Link to={'/books'} style={{ marginRight: 20 }}>
-          Books
-        </Link>
-        <Link to={'/books/add'} style={{ marginRight: 20 }}>
-          Add Book
-        </Link>
-      </div>
+      <Header setToken={setToken} token={token} />
       <Routes>
         <Route path="/" element={<Authors />} />
         <Route path="/books" element={<Books />} />
-        <Route path="/books/add" element={<NewBook />} />
+        <Route
+          path="/books/add"
+          element={
+            <ProtectedRoute token={token}>
+              <NewBook />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/books/recommend"
+          element={
+            <ProtectedRoute token={token}>
+              <Recommend />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <ProtectedRoute token={!token}>
+              <LoginForm setToken={setToken} />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   )

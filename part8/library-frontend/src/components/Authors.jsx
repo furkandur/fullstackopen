@@ -40,7 +40,7 @@ const Authors = () => {
     <div>
       <div>
         <h2>authors</h2>
-        <table>
+        <table style={{ width: 300 }}>
           <tbody>
             <tr>
               <th></th>

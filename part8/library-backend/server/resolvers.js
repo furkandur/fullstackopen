@@ -20,7 +20,12 @@ const resolvers = {
       return Book.find(filters)
     },
     allAuthors: async () => Author.find({}),
-    me: (root, context) => context.currentUser
+    allGenres: async () => {
+      const books = await Book.find({})
+      const allGenres = [...new Set(books.flatMap((book) => book.genres))]
+      return allGenres
+    },
+    me: (root, args, context) => context.currentUser
   },
   Book: {
     author: async (root) => Author.findOne({ _id: root.author })
