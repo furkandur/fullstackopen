@@ -1,7 +1,12 @@
+const { GraphQLError, subscribe } = require('graphql')
+
+const { PubSub } = require('graphql-subscriptions')
+const pubsub = new PubSub()
+
 const Author = require('../schemas/author')
 const Book = require('../schemas/book')
 const User = require('../schemas/user')
-const { GraphQLError } = require('graphql')
+
 const jwt = require('jsonwebtoken')
 
 const resolvers = {
@@ -32,8 +37,7 @@ const resolvers = {
   },
   Author: {
     bookCount: async (root) => {
-      const foundBooks = await Book.find({ author: root._id  })
-      return foundBooks.length
+      return root.books.length
     }
   },
   Mutation: {
@@ -52,7 +56,8 @@ const resolvers = {
         const newAuthor = new Author({
           name: args.author,
           born: null,
-          bookCount: 1
+          bookCount: 1,
+          books: []
         })
         
         try {
@@ -81,6 +86,20 @@ const resolvers = {
           }
         })
       }
+
+      try {
+        foundAuthor.books.push(book._id)
+        await foundAuthor.save()
+      } catch (error) {
+        throw new GraphQLError('Updating author with new book failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            error
+          }
+        })
+      }
+
+      pubsub.publish('BOOK_ADDED', { bookAdded: book })
 
       return book
     },
@@ -143,6 +162,11 @@ const resolvers = {
       }
 
       return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
+    }
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterableIterator('BOOK_ADDED')
     }
   }
 }

@@ -11,7 +11,8 @@ const typeDefs = `
     name: String!
     born: Int
     bookCount: Int!
-    id: ID! 
+    books: [ID!]
+    id: ID!
   }
 
   type User {
@@ -55,6 +56,10 @@ const typeDefs = `
       username: String!
       password: String!
     ): Token
+  }
+
+  type Subscription {
+    bookAdded: Book!
   }
 `
 
