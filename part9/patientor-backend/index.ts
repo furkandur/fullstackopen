@@ -1,12 +1,13 @@
 import express from "express";
 import cors from "cors";
-import diagnosesRouter from "./src/routes/diagnoses";
-import patientsRouter from "./src/routes/patients";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+import diagnosesRouter from "./src/routes/diagnoses";
+import patientsRouter from "./src/routes/patients";
 
 const PORT = 3001;
 
