@@ -1,7 +1,17 @@
 import { Patient } from "../src/types";
 import { toNewPatient } from "../src/utils";
 
-const data = [
+interface Data {
+  id: string;
+  name: string;
+  dateOfBirth: string;
+  ssn: string;
+  gender: string;
+  occupation: string;
+  entries?: string[];
+}
+
+const data: Data[] = [
   {
     id: "d2773336-f723-11e9-8f0b-362b9e155667",
     name: "John McClane",
@@ -9,6 +19,7 @@ const data = [
     ssn: "090786-122X",
     gender: "male",
     occupation: "New york city cop",
+    entries: ["a", "b"],
   },
   {
     id: "d2773598-f723-11e9-8f0b-362b9e155667",
@@ -47,6 +58,9 @@ const data = [
 const patients: Patient[] = data.map((obj) => {
   const object = toNewPatient(obj) as Patient;
   object.id = obj.id;
+  if (!obj.entries) {
+    object.entries = [];
+  }
   return object;
 });
 
