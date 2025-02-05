@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import patientService from "../../services/patients";
-import { Gender, Patient } from "../../types";
+import diagnosisService from "../../services/diagnoses";
+import { Diagnosis, Gender, Patient } from "../../types";
 import { useParams } from "react-router-dom";
 import { AxiosError } from "axios";
 import {
@@ -16,6 +17,7 @@ import { Female, Male } from "@mui/icons-material";
 const PatientPage = () => {
   const { id } = useParams();
   const [patient, setPatient] = useState<Patient>();
+  const [diagnoses, setDiagnoses] = useState<Array<Diagnosis>>();
   const [notFound, setNotFound] = useState();
 
   useEffect(() => {
@@ -23,7 +25,9 @@ const PatientPage = () => {
       if (id) {
         try {
           const patient = await patientService.getById(id);
+          const diagnoses = await diagnosisService.getAll();
           setPatient(patient);
+          setDiagnoses(diagnoses);
         } catch (error) {
           if (error instanceof AxiosError) {
             setNotFound(error.response?.data);
@@ -74,6 +78,27 @@ const PatientPage = () => {
           </ListItem>
         </Stack>
       </List>
+      <div>
+        <Typography variant="h5">Entries</Typography>
+        <Divider />
+        {patient.entries?.map((e) => (
+          <div key={e.id}>
+            <Typography variant="subtitle1">
+              <b>{e.date}</b> {e.description}
+            </Typography>
+            <ul>
+              {e.diagnosisCodes?.map((c) => (
+                <li key={c}>
+                  <Typography variant="body1">
+                    <b>{c} </b>
+                    {diagnoses?.find((d) => d.code === c)?.name}
+                  </Typography>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
