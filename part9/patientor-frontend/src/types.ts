@@ -20,7 +20,7 @@ export interface Patient {
   entries?: Array<Entry>;
 }
 
-interface BaseEntry {
+export interface BaseEntry {
   id: string;
   description: string;
   date: string;
@@ -28,7 +28,7 @@ interface BaseEntry {
   diagnosisCodes?: Array<Diagnosis["code"]>;
 }
 
-interface HospitalEntry extends BaseEntry {
+export interface HospitalEntry extends BaseEntry {
   type: "Hospital";
   discharge: {
     date: string;
@@ -36,7 +36,7 @@ interface HospitalEntry extends BaseEntry {
   };
 }
 
-interface OccupationalHealthcare extends BaseEntry {
+export interface OccupationalHealthcare extends BaseEntry {
   type: "OccupationalHealthcare";
   employerName: string;
   sickLeave?: {
@@ -52,11 +52,25 @@ export enum HealthCheckRating {
   "CriticalRisk" = 3,
 }
 
-interface HealthCheckEntry extends BaseEntry {
+export interface HealthCheckEntry extends BaseEntry {
   type: "HealthCheck";
   healthCheckRating: HealthCheckRating;
 }
 
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
+
 export type Entry = HospitalEntry | OccupationalHealthcare | HealthCheckEntry;
+export type EntryFormValues = UnionOmit<Entry, "id">;
+
+export type BaseFormValues = Omit<BaseEntry, "id">;
+
+export type HospitalEntryValues = Omit<HospitalEntry, keyof BaseEntry>;
+export type OccupationalHealthcareValues = Omit<
+  OccupationalHealthcare,
+  keyof BaseEntry
+>;
+export type HealthCheckEntryValues = Omit<HealthCheckEntry, keyof BaseEntry>;
 
 export type PatientFormValues = Omit<Patient, "id" | "entries">;

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import patientService from "../../services/patients";
-import diagnosisService from "../../services/diagnoses";
-import { Diagnosis, Gender, Patient } from "../../types";
+import { EntryFormValues, Gender, Patient } from "../../types";
 import { useParams } from "react-router-dom";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import {
   Alert,
+  Box,
+  Button,
   Divider,
   List,
   ListItem,
@@ -13,21 +14,30 @@ import {
   Typography,
 } from "@mui/material";
 import { Female, Male } from "@mui/icons-material";
+import EntryDetails from "./EntryDetails";
+import AddEntryModal from "../AddEntryModal";
 
 const PatientPage = () => {
   const { id } = useParams();
   const [patient, setPatient] = useState<Patient>();
-  const [diagnoses, setDiagnoses] = useState<Array<Diagnosis>>();
   const [notFound, setNotFound] = useState();
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string>();
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
 
   useEffect(() => {
     const patientDetail = async () => {
       if (id) {
         try {
           const patient = await patientService.getById(id);
-          const diagnoses = await diagnosisService.getAll();
           setPatient(patient);
-          setDiagnoses(diagnoses);
         } catch (error) {
           if (error instanceof AxiosError) {
             setNotFound(error.response?.data);
@@ -50,6 +60,27 @@ const PatientPage = () => {
         return <Female fontSize="large" />;
       default:
         return;
+    }
+  };
+
+  const submitNewEntry = async (obj: EntryFormValues) => {
+    try {
+      const entry = await patientService.createEntry(patient.id, obj);
+      setPatient({ ...patient, entries: patient.entries?.concat(entry) });
+      setModalOpen(false);
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        if (e?.response?.data.error.issues[0].message) {
+          const message = e.response.data.error.issues[0].message;
+          console.error(message);
+          setError(message);
+        } else {
+          setError("Unrecognized axios error");
+        }
+      } else {
+        console.error("Unknown error", e);
+        setError("Unknown error");
+      }
     }
   };
 
@@ -79,26 +110,26 @@ const PatientPage = () => {
         </Stack>
       </List>
       <div>
-        <Typography variant="h5">Entries</Typography>
-        <Divider />
-        {patient.entries?.map((e) => (
-          <div key={e.id}>
-            <Typography variant="subtitle1">
-              <b>{e.date}</b> {e.description}
-            </Typography>
-            <ul>
-              {e.diagnosisCodes?.map((c) => (
-                <li key={c}>
-                  <Typography variant="body1">
-                    <b>{c} </b>
-                    {diagnoses?.find((d) => d.code === c)?.name}
-                  </Typography>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        <Typography variant="h5" gutterBottom>
+          Entries
+        </Typography>
+        <Button variant="contained" onClick={openModal}>
+          Add Entry
+        </Button>
+        <Box marginTop={3}>
+          {patient.entries && patient.entries.length > 0 ? (
+            patient.entries?.map((e) => <EntryDetails key={e.id} entry={e} />)
+          ) : (
+            <Typography>No Entry</Typography>
+          )}
+        </Box>
       </div>
+      <AddEntryModal
+        modalOpen={modalOpen}
+        onClose={closeModal}
+        onSubmit={submitNewEntry}
+        error={error}
+      />
     </div>
   );
 };
